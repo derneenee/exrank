@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+
+{% block jumbotron %}
+  <div class="jumbotron">
+    <div class="container">
+      <h1 class="display-3">Crypto Exchange Ranking</h1>
+      <p>Find the cryptocurrency-exchange that suits you!</p>
+      <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
+    </div>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <table class="table">
+    <thead class="thead-inverse">
+      <tr>
+        <th>Rank</th>
+        <th>Exchange</th>
+        <th>Description</th>
+        <th>Rating</th>
+        <th>Try it yourself!</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for exchange in exchanges %}
+        <tr>
+          <td>
+            <a href="{% url 'exchange_topics' exchange.pk %}">{{ exchange.name }}</a>
+            <small class="text-muted d-block">{{ exchange.description }}</small>
+          </td>
+          <td class="align-middle">
+            {{ exchange.get_posts_count }}
+          </td>
+          <td class="align-middle">
+            {{ exchange.topics.count }}
+          </td>
+          <td class="align-middle">
+            {% with post=exchange.get_last_post %}
+              {% if post %}
+                <small>
+                  <a href="{% url 'topic_posts' exchange.pk post.topic.pk %}">
+                    By {{ post.created_by.username }} {{ post.created_at|naturaltime }}
+                  </a>
+                </small>
+              {% else %}
+                <small class="text-muted">
+                  <em>No posts yet.</em>
+                </small>
+              {% endif %}
+            {% endwith %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
